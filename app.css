@@ -806,16 +806,12 @@ article { padding: 20px; margin: 0 0 12px; }
   background: var(--ink);
   transform: translateX(-50%);
 }
-.points-card {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
 .points-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  margin: 0 0 4px;
 }
 .points-card h2 {
   margin: 0;
@@ -823,48 +819,28 @@ article { padding: 20px; margin: 0 0 12px; }
   line-height: 22px;
   font-weight: 600;
 }
-.points-chip {
-  flex: none;
-  padding: 3px 8px;
-  border-radius: 999px;
-  background: var(--ice);
-  color: #24508a;
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 500;
-}
-.points-meter {
+.points-card .match { flex: none; }
+.points-sum {
   display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 14px 16px;
-  border-radius: 14px;
-  background: linear-gradient(180deg, #f4f7fb 0%, #eef3f8 100%);
+  align-items: baseline;
+  gap: 8px;
+  margin: 0 0 4px;
 }
-.points-value {
-  margin: 0;
-  color: var(--ink);
-  font-family: Jura, "PingFang SC", "Noto Sans SC", sans-serif;
-  font-size: 36px;
-  line-height: 40px;
+.points-sum b {
+  font-size: 22px;
+  line-height: 28px;
   font-weight: 600;
   font-variant-numeric: tabular-nums;
-  letter-spacing: 0.02em;
 }
-.points-label {
-  margin: 0;
+.points-sum span {
   color: var(--muted);
   font-size: 13px;
-  line-height: 18px;
-  font-weight: 500;
+  line-height: 20px;
 }
-.points-note {
+.points-card > .fine {
   margin: 0;
-  padding-top: 12px;
-  border-top: 1px solid var(--line);
-  color: var(--dim);
-  font-size: 12px;
-  line-height: 18px;
+  font-size: 13px;
+  line-height: 20px;
 }
 .order-block > .kicker {
   margin: 0 0 4px;
