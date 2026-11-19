@@ -182,6 +182,7 @@
       concerns: [],
       saved: false,
       chat: [],
+      chatMode: "qa",
       agreed: true
     };
   }
@@ -195,6 +196,7 @@
       data.screen = "symbion";
       data.tab = "a";
       data.chat = [];
+      if (data.chatMode !== "coach") data.chatMode = "qa";
       return data;
     } catch (e) {
       return null;
@@ -243,6 +245,10 @@
     return "youcao";
   }
 
+  function isCoach() {
+    return state.chatMode === "coach";
+  }
+
   function replyTo(text) {
     var t = String(text || "");
     if (/过敏|渗液|红肿|破皮|就医|医生/.test(t)) {
@@ -254,6 +260,19 @@
     if (/达尔肤|杏仁酸/.test(t)) return KITS.drwu.voice;
     if (/丝塔芙|三酸/.test(t)) return KITS.cetaphil.voice;
     if (!state.saved || !scheme()) return "先完成肤质测试。信息不够时我不猜用法，也不推新的商品。";
+    if (isCoach()) {
+      if (/今晚|晚间|睡前/.test(t)) {
+        return "今晚按这个顺序来：① " + scheme().pm.join(" ② ") + "。做完一步回我「好了」，我再盯下一步。";
+      }
+      if (/早上|早间|出门/.test(t)) {
+        return "早上按这个顺序：① " + scheme().am.join(" ② ") + "。涂完防晒再出门。哪一步不确定就拍给我。";
+      }
+      if (/下一步|接着|然后/.test(t)) return "先确认上一步已经冲净或吸收，再做下一件。一次只加一步，不要叠着赶。";
+      if (/怎么用|用法|早晚/.test(t)) {
+        return "陪练模式只带你走今晚或今早的步骤。先告诉我现在是早还是晚，我按顺序盯。";
+      }
+      return "陪练模式里，你做一步、回我一步。可以说「今晚开始」或「早上开始」。";
+    }
     if (/怎么用|用法|早晚/.test(t)) {
       return "按你的" + scheme().name + "用已经买过的。早：" + scheme().am.join("；") + "。晚：" + scheme().pm.join("；") + "。要听某一件，从化妆台点听用法。";
     }
@@ -628,7 +647,28 @@ var PLAN_FACE = '<span class="plan-face"><svg viewBox="0 0 1024 1024" width="36"
   }
 
   function demoOrders() {
+    if (Array.isArray(state.orders) && state.orders.length) return state.orders;
+    if (state.via === "phone") return state.orders || [];
     return RECENT;
+  }
+
+  function ensureOrders() {
+    if (!Array.isArray(state.orders)) state.orders = [];
+    if (!state.orders.length && state.via !== "phone") state.orders = RECENT.slice();
+  }
+
+  function orderAddSheet() {
+    return '<div class="add-sheet" id="orderSheet" hidden>' +
+      '<button type="button" class="sheet-scrim" id="orderScrim" aria-label="关闭"></button>' +
+      '<form class="sheet" id="orderForm" role="dialog" aria-modal="true" aria-labelledby="orderTitle">' +
+      '<span class="sheet-grab" aria-hidden="true"></span>' +
+      '<div class="sheet-head"><h2 id="orderTitle">添加订单</h2><button type="button" class="sheet-x" id="orderClose" aria-label="关闭"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button></div>' +
+      '<p class="sheet-sub">粘贴近 3 个月在骆王宇橱窗的抖音订单号。</p>' +
+      '<label class="field">订单号</label>' +
+      '<input id="orderId" class="sheet-name" maxlength="32" autocomplete="off" enterkeyhint="done" placeholder="例如 DY-9210042" />' +
+      '<label class="field">商品名（选填）</label>' +
+      '<input id="orderName" class="sheet-name" maxlength="40" autocomplete="off" enterkeyhint="done" placeholder="例如 丝塔芙三酸洁面" />' +
+      '<button type="submit" class="btn">添加</button></form></div>';
   }
 
   function miniIcon(kind) {
@@ -663,9 +703,13 @@ var PLAN_FACE = '<span class="plan-face"><svg viewBox="0 0 1024 1024" width="36"
         "</article>"
       : '<header class="skin-head"><p class="skin-kicker">肤质方案</p><h2>尚未完成自测</h2></header>';
     return skin +
-      "<article><p class=\"kicker\">已购清单</p><h2>近 3 个月订单</h2>" +
+      '<article class="order-block"><p class="kicker">已购清单</p>' +
+      '<div class="order-head"><h2>近 3 个月订单</h2>' +
+      '<button type="button" class="order-add" id="orderAddOpen" aria-label="添加订单" aria-haspopup="dialog">' +
+      '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>' +
+      "</button></div>" +
       '<p class="fine">' + (orders.length ? orders.length + " 件，来自骆王宇橱窗。" : "只显示本人在骆王宇橱窗的订单。") + "</p>" +
-      orderHtml + "</article>";
+      orderHtml + orderAddSheet() + "</article>";
   }
 
   function vanity() {
@@ -731,10 +775,20 @@ var PLAN_FACE = '<span class="plan-face"><svg viewBox="0 0 1024 1024" width="36"
       var play = m.voice ? '<button type="button" class="replay" data-play="1" aria-label="播放语音"><svg viewBox="0 0 1024 1024" width="18" height="18" aria-hidden="true"><path fill="currentColor" d="M257.493333 322.4l215.573334-133.056c24.981333-15.413333 57.877333-7.914667 73.493333 16.746667 5.301333 8.373333 8.106667 18.048 8.106667 27.914666v555.989334C554.666667 819.093333 530.784 842.666667 501.333333 842.666667c-9.994667 0-19.786667-2.773333-28.266666-8L257.493333 701.6H160c-41.237333 0-74.666667-33.013333-74.666667-73.738667V396.138667c0-40.725333 33.429333-73.738667 74.666667-73.738667h97.493333z m26.133334 58.4a32.298667 32.298667 0 0 1-16.96 4.8H160c-5.888 0-10.666667 4.714667-10.666667 10.538667v231.733333c0 5.813333 4.778667 10.538667 10.666667 10.538667h106.666667c5.994667 0 11.872 1.664 16.96 4.8L490.666667 770.986667V253.013333L283.626667 380.8zM800.906667 829.653333a32.288 32.288 0 0 1-45.248-0.757333 31.317333 31.317333 0 0 1 0.768-44.693333c157.653333-150.464 157.653333-393.962667 0-544.426667a31.317333 31.317333 0 0 1-0.768-44.682667 32.288 32.288 0 0 1 45.248-0.757333c183.68 175.306667 183.68 460.010667 0 635.317333z m-106.901334-126.186666a32.288 32.288 0 0 1-45.248-1.216 31.328 31.328 0 0 1 1.237334-44.672c86.229333-80.608 86.229333-210.56 0-291.178667a31.328 31.328 0 0 1-1.237334-44.672 32.288 32.288 0 0 1 45.248-1.216c112.885333 105.546667 112.885333 277.418667 0 382.965333z"/></svg></button>' : "";
       return '<div class="msg luo"><img class="face" src="' + FACE + '" alt="" /><div class="msg-body"><div class="bubble">' + esc(m.text) + "</div>" + play + "</div></div>";
     }).join("");
-    var prompts = ["早晚怎么用", "丝塔芙怎么用", "杏仁酸怎么用"];
+    var coach = isCoach();
+    var prompts = coach
+      ? ["今晚开始", "早上开始", "下一步做什么"]
+      : ["早晚怎么用", "丝塔芙怎么用", "杏仁酸怎么用"];
     var started = state.chat.some(function (m) { return m.role === "me"; });
-    var opener = '<div class="msg luo"><img class="face" src="' + FACE + '" alt="" /><div class="bubble">你好，我是骆王宇。按你测出来的肤质，可以问我已经买过的怎么用，比如早晚步骤、丝塔芙、杏仁酸。想让我看皮肤照片的话，直接发图，我会请人工导师来帮你看。</div></div>';
+    var openerText = coach
+      ? "陪练模式已打开。你做一步，我盯一步。先说「今晚开始」或「早上开始」，我按你的方案带顺序。"
+      : "你好，我是骆王宇。按你测出来的肤质，可以问我已经买过的怎么用，比如早晚步骤、丝塔芙、杏仁酸。想让我看皮肤照片的话，直接发图，我会请人工导师来帮你看。";
+    var opener = '<div class="msg luo"><img class="face" src="' + FACE + '" alt="" /><div class="bubble">' + openerText + "</div></div>";
     var humanIcon = '<svg viewBox="0 0 1024 1024" width="24" height="24" aria-hidden="true"><path fill="currentColor" d="M848 384h-33.6C806.4 224 675.2 96 512 96s-294.4 128-302.4 288H176c-52.8 0-96 43.2-96 96v64c0 52.8 43.2 96 96 96h32c35.2 0 64-28.8 64-64V400c0-132.8 107.2-240 240-240s240 107.2 240 240v224c0 97.6-67.2 179.2-156.8 201.6-11.2-16-30.4-25.6-51.2-25.6h-64c-35.2 0-64 28.8-64 64s28.8 64 64 64h64c25.6 0 49.6-16 59.2-38.4C720 864 808 763.2 816 640h32c52.8 0 96-43.2 96-96v-64c0-52.8-43.2-96-96-96zM176 576c-17.6 0-32-14.4-32-32v-64c0-17.6 14.4-32 32-32h32v128h-32z m704-32c0 17.6-14.4 32-32 32h-32v-128h32c17.6 0 32 14.4 32 32v64z"/></svg>';
+    var mode = state.chatMode === "coach" ? "coach" : "qa";
+    var modeLabel = mode === "coach" ? "护肤陪练" : "护肤问答";
+    var chev = '<svg class="mode-chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5 6 8l3-3.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    var sendIco = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 19V5M12 5l-5 5M12 5l5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
     app.innerHTML =
       '<header class="bar">' + backBtn("backHome") + '<h1 class="bar-title">骆王宇</h1>' +
       '<button type="button" class="bar-human" id="human" aria-label="转人工">' + humanIcon + "</button></header>" +
@@ -744,9 +798,18 @@ var PLAN_FACE = '<span class="plan-face"><svg viewBox="0 0 1024 1024" width="36"
         return '<button type="button" class="ask-chip" data-ask="' + esc(q) + '">' + esc(q) + "</button>";
       }).join("") + "</div>") +
       '<div class="composer">' +
-        '<textarea id="msg" rows="1" enterkeyhint="send" placeholder="输入消息......"></textarea>' +
+        '<textarea id="msg" rows="1" enterkeyhint="send" placeholder="' + (coach ? "回我一步，比如「好了」......" : "输入消息......") + '"></textarea>' +
         '<button type="button" class="hold-label" id="hold">按住说话</button>' +
-        '<button type="button" class="voice" id="voiceMode" aria-label="语音"><img src="assets/composer-voice.svg?v=4" alt="" width="26" height="26"></button>' +
+        '<div class="mode-pick">' +
+          '<button type="button" class="mode-btn" id="modeBtn" aria-haspopup="menu" aria-expanded="false">' +
+            chev + '<span class="mode-name">' + modeLabel + "</span>" +
+          "</button>" +
+          '<div class="mode-menu" id="modeMenu" role="menu" hidden>' +
+            '<button type="button" role="menuitem" data-mode="qa" class="' + (mode === "qa" ? "on" : "") + '">护肤问答</button>' +
+            '<button type="button" role="menuitem" data-mode="coach" class="' + (mode === "coach" ? "on" : "") + '">护肤陪练</button>' +
+          "</div>" +
+        "</div>" +
+        '<button type="button" class="send" id="send" aria-label="发送">' + sendIco + "</button>" +
         '<button type="button" class="plus" id="plus" aria-label="发图片"><img src="assets/composer-plus.svg?v=2" alt="" width="26" height="26"></button>' +
         '<input type="file" id="pickImg" accept="image/*" hidden>' +
       "</div></div>" +
@@ -799,7 +862,7 @@ var PLAN_FACE = '<span class="plan-face"><svg viewBox="0 0 1024 1024" width="36"
 
   function bind() {
     var enter = document.getElementById("enter");
-    if (enter) enter.onclick = function () { go("login"); };
+    if (enter) enter.onclick = function () { go(state.saved ? "home" : "login"); };
     var openLuo = document.getElementById("openLuo");
     if (openLuo) openLuo.onclick = function () { go("splash"); };
     var toSymbion = document.getElementById("toSymbion");
@@ -975,6 +1038,48 @@ var PLAN_FACE = '<span class="plan-face"><svg viewBox="0 0 1024 1024" width="36"
         }
       };
     });
+    var orderForm = document.getElementById("orderForm");
+    if (orderForm) {
+      var orderSheet = document.getElementById("orderSheet");
+      var openOrder = function () { orderSheet.hidden = false; };
+      var closeOrder = function () {
+        orderSheet.hidden = true;
+        orderForm.style.transform = "";
+        orderForm.style.maxHeight = "";
+        orderForm.style.minHeight = "";
+      };
+      document.getElementById("orderAddOpen").onclick = openOrder;
+      document.getElementById("orderScrim").onclick = closeOrder;
+      document.getElementById("orderClose").onclick = closeOrder;
+      orderSheet.onkeydown = function (e) { if (e.key === "Escape") closeOrder(); };
+      orderForm.onsubmit = function (e) {
+        e.preventDefault();
+        var idEl = document.getElementById("orderId");
+        var nameEl = document.getElementById("orderName");
+        var id = (idEl.value || "").trim().toUpperCase();
+        var name = (nameEl.value || "").trim();
+        if (!id) { idEl.focus(); return; }
+        ensureOrders();
+        if (state.orders.some(function (o) { return String(o.id).toUpperCase() === id; })) {
+          toast("这单已经在清单里了");
+          return;
+        }
+        var known = RECENT.find(function (o) { return o.id.toUpperCase() === id; });
+        var now = new Date();
+        var stamp = now.getFullYear() + "-" + pad2(now.getMonth() + 1) + "-" + pad2(now.getDate()) + " " + pad2(now.getHours()) + ":" + pad2(now.getMinutes());
+        state.orders = state.orders.concat([{
+          id: known ? known.id : id,
+          kit: known ? known.kit : "",
+          name: name || (known ? known.name : "待确认商品"),
+          time: known ? known.time : stamp,
+          status: known ? known.status : "已完成",
+          img: known ? known.img : "assets/product-cetaphil.png"
+        }]);
+        save();
+        render();
+        toast("已添加订单");
+      };
+    }
     var addForm = document.getElementById("addForm");
     if (addForm) {
       var sheet = document.getElementById("addSheet");
@@ -1110,6 +1215,49 @@ var PLAN_FACE = '<span class="plan-face"><svg viewBox="0 0 1024 1024" width="36"
         if (played && played.catch) played.catch(function () { toast("这一句暂时播不了"); });
       };
     });
+    var modeBtn = document.getElementById("modeBtn");
+    var modeMenu = document.getElementById("modeMenu");
+    var modePick = modeBtn && modeBtn.closest(".mode-pick");
+    function closeModeMenu() {
+      if (!modePick || !modeMenu || !modeBtn) return;
+      modePick.classList.remove("open");
+      modeMenu.hidden = true;
+      modeBtn.setAttribute("aria-expanded", "false");
+    }
+    if (modeBtn && modeMenu) {
+      modeBtn.onclick = function (e) {
+        e.stopPropagation();
+        var open = !modePick.classList.contains("open");
+        if (open) {
+          modePick.classList.add("open");
+          modeMenu.hidden = false;
+          modeBtn.setAttribute("aria-expanded", "true");
+          setTimeout(function () {
+            document.addEventListener("click", closeModeMenu, { once: true });
+          }, 0);
+        } else {
+          closeModeMenu();
+        }
+      };
+      modeMenu.onclick = function (e) { e.stopPropagation(); };
+    }
+    document.querySelectorAll(".mode-menu [data-mode]").forEach(function (b) {
+      b.onclick = function () {
+        var next = b.getAttribute("data-mode");
+        closeModeMenu();
+        if (state.chatMode === next) return;
+        state.chatMode = next;
+        state.chat.push({
+          role: "sys",
+          text: next === "coach" ? "已切换到护肤陪练" : "已切换到护肤问答"
+        });
+        render();
+        var log = document.getElementById("log");
+        if (log) log.scrollTop = log.scrollHeight;
+      };
+    });
+    var sendBtn = document.getElementById("send");
+    if (sendBtn) sendBtn.onclick = function () { submitMsg(); };
     var voiceMode = document.getElementById("voiceMode");
     if (voiceMode) voiceMode.onclick = function () {
       var box = voiceMode.closest(".composer");
