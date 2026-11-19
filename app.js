@@ -795,7 +795,6 @@ var PLAN_FACE = '<span class="plan-face"><svg viewBox="0 0 1024 1024" width="36"
     var mode = state.chatMode === "coach" ? "coach" : "qa";
     var modeLabel = mode === "coach" ? "护肤陪练" : "护肤问答";
     var chev = '<svg class="mode-chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5 6 8l3-3.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-    var sendIco = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 19V5M12 5l-5 5M12 5l5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
     app.innerHTML =
       '<header class="bar">' + backBtn("backHome") + '<h1 class="bar-title">骆王宇</h1>' +
       '<button type="button" class="bar-human" id="human" aria-label="转人工">' + humanIcon + "</button></header>" +
@@ -816,7 +815,7 @@ var PLAN_FACE = '<span class="plan-face"><svg viewBox="0 0 1024 1024" width="36"
             '<button type="button" role="menuitem" data-mode="coach" class="' + (mode === "coach" ? "on" : "") + '">护肤陪练</button>' +
           "</div>" +
         "</div>" +
-        '<button type="button" class="send" id="send" aria-label="发送">' + sendIco + "</button>" +
+        '<button type="button" class="voice" id="voiceMode" aria-label="语音"><img src="assets/composer-voice.svg?v=4" alt="" width="26" height="26"></button>' +
         '<button type="button" class="plus" id="plus" aria-label="发图片"><img src="assets/composer-plus.svg?v=2" alt="" width="26" height="26"></button>' +
         '<input type="file" id="pickImg" accept="image/*" hidden>' +
       "</div></div>" +
@@ -1263,8 +1262,6 @@ var PLAN_FACE = '<span class="plan-face"><svg viewBox="0 0 1024 1024" width="36"
         if (log) log.scrollTop = log.scrollHeight;
       };
     });
-    var sendBtn = document.getElementById("send");
-    if (sendBtn) sendBtn.onclick = function () { submitMsg(); };
     var voiceMode = document.getElementById("voiceMode");
     if (voiceMode) voiceMode.onclick = function () {
       var box = voiceMode.closest(".composer");

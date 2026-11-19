@@ -1341,22 +1341,6 @@ article > .btn.sm { margin-top: 12px; }
   border-radius: 0;
   background: transparent;
 }
-.composer .send {
-  flex: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  border-radius: 50%;
-  background: #eef1f4;
-  color: var(--ink);
-}
-.composer .send:active { transform: scale(0.96); }
-.composer .send svg { display: block; }
 .composer .plus {
   order: -1;
   flex: none;
@@ -1382,11 +1366,11 @@ article > .btn.sm { margin-top: 12px; }
   touch-action: none;
 }
 .composer.talking textarea { display: none; }
+.composer.talking .mode-pick { display: none; }
 .composer.talking { position: relative; justify-content: space-between; min-height: 50px; }
 .composer.talking .hold-label { display: flex; align-items: center; justify-content: center; position: absolute; inset: 0; border-radius: inherit; }
 .composer.talking .voice, .composer.talking .plus { position: relative; z-index: 1; }
-.composer:has(.hold-label.down) .mode-pick,
-.composer:has(.hold-label.down) .send { display: none; }
+.composer:has(.hold-label.down) .mode-pick { display: none; }
 .hold-label {
   -webkit-user-select: none;
   user-select: none;
@@ -1396,8 +1380,7 @@ article > .btn.sm { margin-top: 12px; }
 .composer:has(.hold-label.down) .hold-label { color: var(--on-btn); }
 .composer:has(.hold-label.down) .voice,
 .composer:has(.hold-label.down) .plus,
-.composer:has(.hold-label.down) .mode-pick,
-.composer:has(.hold-label.down) .send { display: none; }
+.composer:has(.hold-label.down) .mode-pick { display: none; }
 .dock:has(.hold-label.down) { background: none; }
 .dock:has(.hold-label.down) .asks { visibility: hidden; }
 .talk-ov {
