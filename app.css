@@ -845,11 +845,11 @@ article { padding: 20px; margin: 0 0 12px; }
 }
 .points-crown {
   position: absolute;
-  right: 18px;
-  top: 50%;
-  width: 132px;
-  height: 132px;
-  margin-top: -66px;
+  /* Match Figma Frame 2085662981: 142×142 at x204 y18 in 358×145 */
+  right: 12px;
+  top: 18px;
+  width: 142px;
+  height: 142px;
   object-fit: cover;
   object-position: center;
   opacity: 0.4;
