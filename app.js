@@ -703,9 +703,9 @@ var PLAN_FACE = '<span class="plan-face"><svg viewBox="0 0 1024 1024" width="36"
         "</article>"
       : '<header class="skin-head"><p class="skin-kicker">肤质方案</p><h2>尚未完成自测</h2></header>';
     var points = '<article class="points-card">' +
-      '<div class="points-head"><h2>积分</h2><span class="match wait">同步待确认</span></div>' +
-      '<p class="points-sum" aria-label="可用积分 0"><b>0</b><span>可用积分</span></p>' +
-      '<p class="fine">暂无积分 · 与工作室星云有客积分同步暂未确认</p>' +
+      '<p class="points-kicker">积分</p>' +
+      '<p class="points-value" aria-label="可用积分 0">0</p>' +
+      '<p class="points-label">可用积分</p>' +
       "</article>";
     return skin + points +
       '<article class="order-block"><p class="kicker">已购清单</p>' +

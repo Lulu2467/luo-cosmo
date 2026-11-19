@@ -806,41 +806,33 @@ article { padding: 20px; margin: 0 0 12px; }
   background: var(--ink);
   transform: translateX(-50%);
 }
-.points-head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin: 0 0 4px;
+.points-card {
+  padding-top: 22px;
+  padding-bottom: 22px;
 }
-.points-card h2 {
+.points-kicker {
+  margin: 0 0 10px;
+  color: var(--dim);
+  font-size: 12px;
+  line-height: 18px;
+  font-weight: 500;
+  letter-spacing: 0.22em;
+}
+.points-value {
   margin: 0;
-  font-size: 16px;
-  line-height: 22px;
-  font-weight: 600;
-}
-.points-card .match { flex: none; }
-.points-sum {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-  margin: 0 0 4px;
-}
-.points-sum b {
-  font-size: 22px;
-  line-height: 28px;
-  font-weight: 600;
+  color: var(--ink);
+  font-size: 40px;
+  line-height: 44px;
+  font-weight: 500;
   font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
 }
-.points-sum span {
+.points-label {
+  margin: 8px 0 0;
   color: var(--muted);
   font-size: 13px;
   line-height: 20px;
-}
-.points-card > .fine {
-  margin: 0;
-  font-size: 13px;
-  line-height: 20px;
+  letter-spacing: 0.08em;
 }
 .order-block > .kicker {
   margin: 0 0 4px;
