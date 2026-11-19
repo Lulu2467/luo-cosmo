@@ -807,32 +807,59 @@ article { padding: 20px; margin: 0 0 12px; }
   transform: translateX(-50%);
 }
 .points-card {
-  padding-top: 22px;
-  padding-bottom: 22px;
+  position: relative;
+  overflow: hidden;
+  padding: 22px 20px 20px;
+  border: 1px solid rgba(255, 255, 255, 0.72);
+  background:
+    linear-gradient(145deg, rgba(229, 238, 245, 0.82) 0%, rgba(255, 255, 255, 0.55) 48%, rgba(247, 250, 253, 0.72) 100%);
+  box-shadow:
+    0 10px 32px rgba(36, 80, 138, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(22px) saturate(1.15);
+  -webkit-backdrop-filter: blur(22px) saturate(1.15);
+}
+.points-card::before {
+  content: "";
+  position: absolute;
+  top: -28%;
+  right: -12%;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0) 70%);
+  pointer-events: none;
+}
+.points-kicker,
+.points-value,
+.points-label {
+  position: relative;
+  z-index: 1;
 }
 .points-kicker {
-  margin: 0 0 10px;
-  color: var(--dim);
+  margin: 0 0 12px;
+  color: #5d6b82;
   font-size: 12px;
   line-height: 18px;
   font-weight: 500;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.28em;
 }
 .points-value {
   margin: 0;
   color: var(--ink);
-  font-size: 40px;
-  line-height: 44px;
-  font-weight: 500;
+  font-family: Jura, "PingFang SC", "Noto Sans SC", sans-serif;
+  font-size: 44px;
+  line-height: 48px;
+  font-weight: 600;
   font-variant-numeric: tabular-nums;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.06em;
 }
 .points-label {
-  margin: 8px 0 0;
-  color: var(--muted);
-  font-size: 13px;
-  line-height: 20px;
-  letter-spacing: 0.08em;
+  margin: 10px 0 0;
+  color: #5d6b82;
+  font-size: 12px;
+  line-height: 18px;
+  letter-spacing: 0.16em;
 }
 .order-block > .kicker {
   margin: 0 0 4px;
