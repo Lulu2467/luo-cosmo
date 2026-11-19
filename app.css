@@ -845,17 +845,22 @@ article { padding: 20px; margin: 0 0 12px; }
 }
 .points-crown {
   position: absolute;
-  right: -12px;
+  right: 18px;
   top: 50%;
-  width: 142px;
-  height: 142px;
-  margin-top: -71px;
+  width: 132px;
+  height: 132px;
+  margin-top: -66px;
   object-fit: cover;
+  object-position: center;
   opacity: 0.4;
   mix-blend-mode: luminosity;
   pointer-events: none;
   z-index: 0;
-  filter: contrast(1.2) saturate(0.4) brightness(1.08);
+  filter:
+    contrast(1.37)
+    saturate(0.26)
+    brightness(1.1)
+    sepia(0.08);
 }
 .points-kicker,
 .points-value,
