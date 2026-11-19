@@ -702,7 +702,15 @@ var PLAN_FACE = '<span class="plan-face"><svg viewBox="0 0 1024 1024" width="36"
         skinBlock("am", "早间", sc.am) + skinBlock("pm", "晚间", sc.pm) +
         "</article>"
       : '<header class="skin-head"><p class="skin-kicker">肤质方案</p><h2>尚未完成自测</h2></header>';
-    return skin +
+    var points = '<article class="points-card">' +
+      '<div class="points-head"><h2>积分</h2><span class="points-chip">同步待确认</span></div>' +
+      '<div class="points-meter">' +
+        '<p class="points-value" aria-label="可用积分 0">0</p>' +
+        '<p class="points-label">可用积分</p>' +
+      "</div>" +
+      '<p class="points-note">暂无积分 · 与工作室星云有客积分同步暂未确认</p>' +
+      "</article>";
+    return skin + points +
       '<article class="order-block"><p class="kicker">已购清单</p>' +
       '<div class="order-head"><h2>近 3 个月订单</h2>' +
       '<button type="button" class="order-add" id="orderAddOpen" aria-label="添加订单" aria-haspopup="dialog">' +
