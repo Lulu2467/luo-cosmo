@@ -702,9 +702,10 @@ var PLAN_FACE = '<span class="plan-face"><svg viewBox="0 0 1024 1024" width="36"
         skinBlock("am", "早间", sc.am) + skinBlock("pm", "晚间", sc.pm) +
         "</article>"
       : '<header class="skin-head"><p class="skin-kicker">肤质方案</p><h2>尚未完成自测</h2></header>';
+    var pointsBal = 2860;
     var points = '<article class="points-card">' +
       '<p class="points-kicker">积分</p>' +
-      '<p class="points-value" aria-label="可用积分 0">0</p>' +
+      '<p class="points-value" aria-label="可用积分 ' + pointsBal + '">' + pointsBal.toLocaleString("zh-CN") + "</p>" +
       '<p class="points-label">可用积分</p>' +
       "</article>";
     return skin + points +
