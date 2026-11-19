@@ -809,8 +809,10 @@ article { padding: 20px; margin: 0 0 12px; }
 .points-card {
   position: relative;
   overflow: hidden;
+  min-height: 145px;
   padding: 22px 20px 20px;
   border: 1px solid rgba(255, 255, 255, 0.78);
+  border-radius: 16px;
   background:
     linear-gradient(135deg, #d7e6f4 0%, #e8f1f8 38%, #f7fbfe 72%, #ffffff 100%);
   box-shadow:
@@ -840,6 +842,20 @@ article { padding: 20px; margin: 0 0 12px; }
   height: 1px;
   background: linear-gradient(90deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.2));
   pointer-events: none;
+}
+.points-crown {
+  position: absolute;
+  right: -12px;
+  top: 50%;
+  width: 142px;
+  height: 142px;
+  margin-top: -71px;
+  object-fit: cover;
+  opacity: 0.4;
+  mix-blend-mode: luminosity;
+  pointer-events: none;
+  z-index: 0;
+  filter: contrast(1.2) saturate(0.4) brightness(1.08);
 }
 .points-kicker,
 .points-value,
