@@ -742,9 +742,11 @@ var PLAN_FACE = '<span class="plan-face"><svg viewBox="0 0 1024 1024" width="36"
             '<p class="plan-fold-title">护肤方案</p>' +
             '<button type="button" class="plan-fold-btn" id="planFold" aria-expanded="' + planOpen + '" aria-controls="planFoldBody" aria-label="' + (planOpen ? "收起护肤方案" : "展开护肤方案") + '">' + foldChev + "</button>" +
           "</div>" +
-          '<div class="plan-fold-body" id="planFoldBody"' + (planOpen ? "" : " hidden") + ">" +
-            '<p class="skin-goal">' + esc(sc.goal) + "</p>" +
-            skinBlock("am", "早间", sc.am) + skinBlock("pm", "晚间", sc.pm) +
+          '<div class="plan-fold-body" id="planFoldBody">' +
+            '<div class="plan-fold-inner">' +
+              '<p class="skin-goal">' + esc(sc.goal) + "</p>" +
+              skinBlock("am", "早间", sc.am) + skinBlock("pm", "晚间", sc.pm) +
+            "</div>" +
           "</div>" +
         "</article>"
       : '<header class="skin-head"><h2>尚未完成自测</h2></header>';
@@ -1066,9 +1068,13 @@ var PLAN_FACE = '<span class="plan-face"><svg viewBox="0 0 1024 1024" width="36"
     if (tabB) tabB.onclick = function () { state.tab = "b"; render(); };
     var planFold = document.getElementById("planFold");
     if (planFold) planFold.onclick = function () {
-      state.planOpen = state.planOpen === false;
+      var file = planFold.closest(".skin-file");
+      var open = !(state.planOpen !== false);
+      state.planOpen = open;
+      if (file) file.classList.toggle("open", open);
+      planFold.setAttribute("aria-expanded", open ? "true" : "false");
+      planFold.setAttribute("aria-label", open ? "收起护肤方案" : "展开护肤方案");
       if (state.saved) save();
-      render();
     };
     var ask = document.getElementById("ask");
     var modeSheet = document.getElementById("modeSheet");

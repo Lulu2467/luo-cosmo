@@ -1307,17 +1307,24 @@ article > .btn.sm { margin-top: 12px; }
 .plan-fold-body {
   position: relative;
   z-index: 1;
-  margin-top: 14px;
-  animation: plan-body-in 0.28s ease;
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition: grid-template-rows 0.32s ease, opacity 0.24s ease, margin-top 0.32s ease;
+  margin-top: 0;
 }
-.plan-fold-body[hidden] { display: none; }
-@keyframes plan-body-in {
-  from { opacity: 0; transform: translateY(-6px); }
-  to { opacity: 1; transform: none; }
+.skin-file.open .plan-fold-body {
+  grid-template-rows: 1fr;
+  opacity: 1;
+  margin-top: 14px;
+}
+.plan-fold-inner {
+  overflow: hidden;
+  min-height: 0;
 }
 @media (prefers-reduced-motion: reduce) {
-  .skin-file::before,
-  .plan-fold-body { animation: none; }
+  .skin-file::before { animation: none; }
+  .plan-fold-body { transition: none; }
 }
 .skin-goal { margin: 0; padding-left: 12px; border-left: 2px solid #24508a; color: var(--ink); font-size: 14px; line-height: 22px; font-weight: 500; }
 .skin-block { margin: 16px 0 0; padding-top: 14px; border-top: 1px solid var(--line); }
