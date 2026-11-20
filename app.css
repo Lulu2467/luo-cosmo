@@ -1178,23 +1178,28 @@ article > .btn.sm { margin-top: 12px; }
   object-position: 50% 22%;
 }
 .mode-card-coach {
-  background: var(--ink);
-  color: #fff;
-  box-shadow: 0 10px 28px rgba(26, 39, 68, 0.18);
+  color: var(--ink);
+  background:
+    linear-gradient(135deg, #d7e6f4 0%, #e8f1f8 42%, #f4f8fc 78%, #ffffff 100%);
+  box-shadow:
+    0 10px 28px rgba(36, 80, 138, 0.1),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.78),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
 }
 .mode-card-coach .mode-card-ico {
-  background: rgba(255, 255, 255, 0.12);
-  color: #fff;
+  background: rgba(255, 255, 255, 0.72);
+  color: #24508a;
 }
 .mode-card-coach .mode-card-ico-face {
-  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.28);
+  background: #dfe8f2;
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.9);
 }
-.mode-card-coach .mode-card-row b { color: #fff; }
+.mode-card-coach .mode-card-row b { color: var(--ink); }
 .mode-card-coach .mode-card-row i {
   background: #24508a;
   color: #fff;
 }
-.mode-card-coach .mode-card-desc { color: rgba(255, 255, 255, 0.72); }
+.mode-card-coach .mode-card-desc { color: var(--muted); }
 .mode-card-qa {
   background: #fff;
   color: var(--ink);
