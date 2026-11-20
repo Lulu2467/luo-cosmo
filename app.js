@@ -184,6 +184,7 @@
       chat: [],
       chatMode: "qa",
       rememberMode: false,
+      planOpen: true,
       agreed: true
     };
   }
@@ -199,6 +200,8 @@
       data.chat = [];
       if (data.chatMode !== "coach") data.chatMode = "qa";
       data.rememberMode = !!data.rememberMode;
+      if (data.planOpen === false) data.planOpen = false;
+      else data.planOpen = true;
       return data;
     } catch (e) {
       return null;
@@ -730,11 +733,20 @@ var PLAN_FACE = '<span class="plan-face"><svg viewBox="0 0 1024 1024" width="36"
             '<p class="fine van-time">' + miniIcon("box") + esc(o.id) + "</p></div></div></div>";
         }).join("")
       : '<p>近 3 个月还没有在骆王宇橱窗下单。</p>';
+    var planOpen = state.planOpen !== false;
+    var foldChev = '<svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true"><path d="M3 4.5 6 8l3-3.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
     var skin = sc && state.saved
       ? '<header class="skin-head"><p class="skin-kicker">肤质方案</p><div class="skin-title">' + PLAN_FACE + "<h2>" + esc(sc.name) + "</h2></div>" +
         '<p class="skin-state">' + esc(sc.state) + "</p></header>" +
-        '<article class="skin-file"><p class="skin-goal">' + esc(sc.goal) + "</p>" +
-        skinBlock("am", "早间", sc.am) + skinBlock("pm", "晚间", sc.pm) +
+        '<article class="skin-file' + (planOpen ? " open" : "") + '">' +
+          '<div class="plan-fold-head">' +
+            '<p class="plan-fold-title">护肤方案</p>' +
+            '<button type="button" class="plan-fold-btn" id="planFold" aria-expanded="' + planOpen + '" aria-controls="planFoldBody" aria-label="' + (planOpen ? "收起护肤方案" : "展开护肤方案") + '">' + foldChev + "</button>" +
+          "</div>" +
+          '<div class="plan-fold-body" id="planFoldBody"' + (planOpen ? "" : " hidden") + ">" +
+            '<p class="skin-goal">' + esc(sc.goal) + "</p>" +
+            skinBlock("am", "早间", sc.am) + skinBlock("pm", "晚间", sc.pm) +
+          "</div>" +
         "</article>"
       : '<header class="skin-head"><p class="skin-kicker">肤质方案</p><h2>尚未完成自测</h2></header>';
     var pointsBal = 2860;
@@ -1065,6 +1077,12 @@ var PLAN_FACE = '<span class="plan-face"><svg viewBox="0 0 1024 1024" width="36"
     var tabB = document.getElementById("tabB");
     if (tabA) tabA.onclick = function () { state.tab = "a"; render(); };
     if (tabB) tabB.onclick = function () { state.tab = "b"; render(); };
+    var planFold = document.getElementById("planFold");
+    if (planFold) planFold.onclick = function () {
+      state.planOpen = state.planOpen === false;
+      if (state.saved) save();
+      render();
+    };
     var ask = document.getElementById("ask");
     var modeSheet = document.getElementById("modeSheet");
     var openModeSheet = function () {

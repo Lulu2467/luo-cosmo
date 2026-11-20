@@ -1260,6 +1260,39 @@ article > .btn.sm { margin-top: 12px; }
 .skin-head h2 { margin: 0; font-size: 16px; line-height: 22px; font-weight: 600; }
 .skin-kicker { margin: 0 0 4px; font-size: 12px; line-height: 18px; letter-spacing: 0.18em; color: var(--dim); }
 .skin-head .skin-state { margin: 6px 0 0; color: var(--muted); font-size: 13px; line-height: 20px; }
+.plan-fold-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0;
+}
+.plan-fold-title {
+  margin: 0;
+  font-size: 15px;
+  line-height: 22px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.plan-fold-btn {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--ice);
+  color: var(--ink);
+  transition: transform 0.16s ease;
+}
+.plan-fold-btn svg { display: block; }
+.skin-file.open .plan-fold-btn { transform: rotate(180deg); }
+.plan-fold-body { margin-top: 14px; }
+.plan-fold-body[hidden] { display: none; }
 .skin-goal { margin: 0; padding-left: 12px; border-left: 2px solid #24508a; color: var(--ink); font-size: 14px; line-height: 22px; font-weight: 500; }
 .skin-block { margin: 16px 0 0; padding-top: 14px; border-top: 1px solid var(--line); }
 .skin-file .plan-when-t { margin: 0; font-size: 14px; line-height: 20px; font-weight: 600; color: var(--ink); }
