@@ -1129,12 +1129,13 @@ var PLAN_FACE = '<span class="plan-face"><svg viewBox="0 0 1024 1024" width="36"
     var orderForm = document.getElementById("orderForm");
     if (orderForm) {
       var orderSheet = document.getElementById("orderSheet");
-      var openOrder = function () { orderSheet.hidden = false; };
+      var openOrder = function () {
+        orderSheet.hidden = false;
+        fitKeyboard();
+      };
       var closeOrder = function () {
         orderSheet.hidden = true;
-        orderForm.style.transform = "";
-        orderForm.style.maxHeight = "";
-        orderForm.style.minHeight = "";
+        clearSheetKb(orderForm);
       };
       document.getElementById("orderAddOpen").onclick = openOrder;
       document.getElementById("orderScrim").onclick = closeOrder;
@@ -1171,12 +1172,13 @@ var PLAN_FACE = '<span class="plan-face"><svg viewBox="0 0 1024 1024" width="36"
     var addForm = document.getElementById("addForm");
     if (addForm) {
       var sheet = document.getElementById("addSheet");
-      var openSheet = function () { sheet.hidden = false; };
+      var openSheet = function () {
+        sheet.hidden = false;
+        fitKeyboard();
+      };
       var closeSheet = function () {
         sheet.hidden = true;
-        addForm.style.transform = "";
-        addForm.style.maxHeight = "";
-        addForm.style.minHeight = "";
+        clearSheetKb(addForm);
       };
       document.getElementById("addOpen").onclick = openSheet;
       document.getElementById("addScrim").onclick = closeSheet;
@@ -1419,10 +1421,44 @@ var PLAN_FACE = '<span class="plan-face"><svg viewBox="0 0 1024 1024" width="36"
     qToken += 1;
   }
 
+  function clearSheetKb(form) {
+    if (!form) return;
+    form.classList.remove("sheet-kb");
+    form.style.transform = "";
+    form.style.maxHeight = "";
+    form.style.minHeight = "";
+    form.style.removeProperty("--sheet-max");
+  }
+
+  function fitSheetForm(form, covered, vv) {
+    if (!form) return;
+    var host = form.closest(".add-sheet");
+    if (!host || host.hidden) {
+      clearSheetKb(form);
+      return;
+    }
+    if (covered > 48) {
+      var maxH = Math.max(220, Math.round(vv.height - 10));
+      form.classList.add("sheet-kb");
+      form.style.minHeight = "0px";
+      form.style.maxHeight = maxH + "px";
+      form.style.setProperty("--sheet-max", maxH + "px");
+      form.style.transform = "translateY(-" + covered + "px)";
+      var focus = document.activeElement;
+      if (focus && form.contains(focus) && (focus.tagName === "INPUT" || focus.tagName === "TEXTAREA")) {
+        requestAnimationFrame(function () {
+          try { focus.scrollIntoView({ block: "center", inline: "nearest" }); } catch (e) {}
+        });
+      }
+    } else {
+      clearSheetKb(form);
+    }
+  }
+
   function fitKeyboard() {
     var vv = window.visualViewport;
     if (!vv) return;
-    var covered = window.innerHeight - vv.offsetTop - vv.height;
+    var covered = Math.max(0, Math.round(window.innerHeight - vv.offsetTop - vv.height));
     if (state.screen === "chat" && covered > 80) {
       app.style.minHeight = "0px";
       app.style.height = Math.round(vv.height) + "px";
@@ -1432,25 +1468,20 @@ var PLAN_FACE = '<span class="plan-face"><svg viewBox="0 0 1024 1024" width="36"
       app.style.height = "";
       app.style.transform = "";
     }
-    var addForm = document.getElementById("addForm");
-    var addSheet = document.getElementById("addSheet");
-    if (addForm && addSheet && !addSheet.hidden) {
-      var lift = Math.max(0, Math.round(covered));
-      if (lift) {
-        addForm.style.transform = "translateY(-" + lift + "px)";
-        addForm.style.maxHeight = Math.max(280, Math.round(vv.height - 12)) + "px";
-        addForm.style.minHeight = "0px";
-      } else if (addForm.style.maxHeight) {
-        addForm.style.transform = "";
-        addForm.style.maxHeight = "";
-        addForm.style.minHeight = "";
-      }
-    }
+    fitSheetForm(document.getElementById("addForm"), covered, vv);
+    fitSheetForm(document.getElementById("orderForm"), covered, vv);
   }
   if (window.visualViewport) {
     visualViewport.addEventListener("resize", fitKeyboard);
     visualViewport.addEventListener("scroll", fitKeyboard);
   }
+  document.addEventListener("focusin", function (e) {
+    if (!e.target || !e.target.closest) return;
+    if (e.target.closest("#addForm, #orderForm")) fitKeyboard();
+  });
+  document.addEventListener("focusout", function () {
+    setTimeout(fitKeyboard, 80);
+  });
 
   var renderScreen = render;
   render = function () {
