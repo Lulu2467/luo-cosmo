@@ -1486,71 +1486,6 @@ article > .btn.sm { margin-top: 12px; }
   background: rgba(255, 255, 255, 0.99);
   box-shadow: 0 0 40px rgba(183, 183, 183, 0.25);
 }
-.mode-pick {
-  position: relative;
-  flex: none;
-  display: flex;
-  align-items: center;
-}
-.mode-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  margin: 0;
-  padding: 0 2px;
-  border: 0;
-  background: transparent;
-  color: var(--ink);
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 600;
-  white-space: nowrap;
-}
-.mode-chev {
-  width: 12px;
-  height: 12px;
-  flex: none;
-  color: var(--ink);
-  transition: transform 0.16s ease;
-}
-.mode-pick.open .mode-chev { transform: rotate(180deg); }
-.mode-name { font-size: 14px; line-height: 20px; font-weight: 600; color: var(--ink); }
-.mode-menu {
-  position: absolute;
-  right: 0;
-  bottom: calc(100% + 8px);
-  z-index: 5;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 112px;
-  padding: 6px;
-  border-radius: 14px;
-  background: #fff;
-  box-shadow: 0 8px 28px rgba(26, 39, 68, 0.14);
-}
-.mode-menu[hidden] { display: none; }
-.mode-menu button {
-  display: block;
-  width: 100%;
-  margin: 0;
-  padding: 8px 12px;
-  border: 0;
-  border-radius: 10px;
-  background: transparent;
-  color: var(--dim);
-  font-size: 14px;
-  line-height: 20px;
-  font-weight: 500;
-  text-align: center;
-  white-space: nowrap;
-}
-.mode-menu button.on {
-  background: var(--ice);
-  color: #24508a;
-  font-weight: 600;
-}
-.mode-menu button:active { transform: scale(0.98); }
 .composer .voice {
   flex: none;
   width: 26px;
@@ -1585,11 +1520,9 @@ article > .btn.sm { margin-top: 12px; }
   touch-action: none;
 }
 .composer.talking textarea { display: none; }
-.composer.talking .mode-pick { display: none; }
 .composer.talking { position: relative; justify-content: space-between; min-height: 50px; }
 .composer.talking .hold-label { display: flex; align-items: center; justify-content: center; position: absolute; inset: 0; border-radius: inherit; }
 .composer.talking .voice, .composer.talking .plus { position: relative; z-index: 1; }
-.composer:has(.hold-label.down) .mode-pick { display: none; }
 .hold-label {
   -webkit-user-select: none;
   user-select: none;
@@ -1598,8 +1531,7 @@ article > .btn.sm { margin-top: 12px; }
 .composer:has(.hold-label.down) { position: relative; z-index: 4; background: var(--enter); box-shadow: none; }
 .composer:has(.hold-label.down) .hold-label { color: var(--on-btn); }
 .composer:has(.hold-label.down) .voice,
-.composer:has(.hold-label.down) .plus,
-.composer:has(.hold-label.down) .mode-pick { display: none; }
+.composer:has(.hold-label.down) .plus { display: none; }
 .dock:has(.hold-label.down) { background: none; }
 .dock:has(.hold-label.down) .asks { visibility: hidden; }
 .talk-ov {

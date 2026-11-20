@@ -838,9 +838,6 @@ var PLAN_FACE = '<span class="plan-face"><svg viewBox="0 0 1024 1024" width="36"
       : "你好，我是骆王宇。按你测出来的肤质，可以问我已经买过的怎么用，比如早晚步骤、丝塔芙、杏仁酸。想让我看皮肤照片的话，直接发图，我会请人工导师来帮你看。";
     var opener = '<div class="msg luo"><img class="face" src="' + FACE + '" alt="" /><div class="bubble">' + openerText + "</div></div>";
     var humanIcon = '<svg viewBox="0 0 1024 1024" width="24" height="24" aria-hidden="true"><path fill="currentColor" d="M848 384h-33.6C806.4 224 675.2 96 512 96s-294.4 128-302.4 288H176c-52.8 0-96 43.2-96 96v64c0 52.8 43.2 96 96 96h32c35.2 0 64-28.8 64-64V400c0-132.8 107.2-240 240-240s240 107.2 240 240v224c0 97.6-67.2 179.2-156.8 201.6-11.2-16-30.4-25.6-51.2-25.6h-64c-35.2 0-64 28.8-64 64s28.8 64 64 64h64c25.6 0 49.6-16 59.2-38.4C720 864 808 763.2 816 640h32c52.8 0 96-43.2 96-96v-64c0-52.8-43.2-96-96-96zM176 576c-17.6 0-32-14.4-32-32v-64c0-17.6 14.4-32 32-32h32v128h-32z m704-32c0 17.6-14.4 32-32 32h-32v-128h32c17.6 0 32 14.4 32 32v64z"/></svg>';
-    var mode = state.chatMode === "coach" ? "coach" : "qa";
-    var modeLabel = mode === "coach" ? "护肤陪练" : "护肤问答";
-    var chev = '<svg class="mode-chev" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 4.5 6 8l3-3.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
     app.innerHTML =
       '<header class="bar">' + backBtn("backHome") + '<h1 class="bar-title">骆王宇</h1>' +
       '<button type="button" class="bar-human" id="human" aria-label="转人工">' + humanIcon + "</button></header>" +
@@ -852,15 +849,6 @@ var PLAN_FACE = '<span class="plan-face"><svg viewBox="0 0 1024 1024" width="36"
       '<div class="composer">' +
         '<textarea id="msg" rows="1" enterkeyhint="send" placeholder="' + (coach ? "回我一步，比如「好了」......" : "输入消息......") + '"></textarea>' +
         '<button type="button" class="hold-label" id="hold">按住说话</button>' +
-        '<div class="mode-pick">' +
-          '<button type="button" class="mode-btn" id="modeBtn" aria-haspopup="menu" aria-expanded="false">' +
-            chev + '<span class="mode-name">' + modeLabel + "</span>" +
-          "</button>" +
-          '<div class="mode-menu" id="modeMenu" role="menu" hidden>' +
-            '<button type="button" role="menuitem" data-mode="qa" class="' + (mode === "qa" ? "on" : "") + '">护肤问答</button>' +
-            '<button type="button" role="menuitem" data-mode="coach" class="' + (mode === "coach" ? "on" : "") + '">护肤陪练</button>' +
-          "</div>" +
-        "</div>" +
         '<button type="button" class="voice" id="voiceMode" aria-label="语音"><img src="assets/composer-voice.svg?v=4" alt="" width="26" height="26"></button>' +
         '<button type="button" class="plus" id="plus" aria-label="发图片"><img src="assets/composer-plus.svg?v=2" alt="" width="26" height="26"></button>' +
         '<input type="file" id="pickImg" accept="image/*" hidden>' +
@@ -1307,47 +1295,6 @@ var PLAN_FACE = '<span class="plan-face"><svg viewBox="0 0 1024 1024" width="36"
         audio.currentTime = 0;
         var played = audio.play();
         if (played && played.catch) played.catch(function () { toast("这一句暂时播不了"); });
-      };
-    });
-    var modeBtn = document.getElementById("modeBtn");
-    var modeMenu = document.getElementById("modeMenu");
-    var modePick = modeBtn && modeBtn.closest(".mode-pick");
-    function closeModeMenu() {
-      if (!modePick || !modeMenu || !modeBtn) return;
-      modePick.classList.remove("open");
-      modeMenu.hidden = true;
-      modeBtn.setAttribute("aria-expanded", "false");
-    }
-    if (modeBtn && modeMenu) {
-      modeBtn.onclick = function (e) {
-        e.stopPropagation();
-        var open = !modePick.classList.contains("open");
-        if (open) {
-          modePick.classList.add("open");
-          modeMenu.hidden = false;
-          modeBtn.setAttribute("aria-expanded", "true");
-          setTimeout(function () {
-            document.addEventListener("click", closeModeMenu, { once: true });
-          }, 0);
-        } else {
-          closeModeMenu();
-        }
-      };
-      modeMenu.onclick = function (e) { e.stopPropagation(); };
-    }
-    document.querySelectorAll(".mode-menu [data-mode]").forEach(function (b) {
-      b.onclick = function () {
-        var next = b.getAttribute("data-mode");
-        closeModeMenu();
-        if (state.chatMode === next) return;
-        state.chatMode = next;
-        state.chat.push({
-          role: "sys",
-          text: next === "coach" ? "已切换到护肤陪练" : "已切换到护肤问答"
-        });
-        render();
-        var log = document.getElementById("log");
-        if (log) log.scrollTop = log.scrollHeight;
       };
     });
     var voiceMode = document.getElementById("voiceMode");
