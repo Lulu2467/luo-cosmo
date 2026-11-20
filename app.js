@@ -680,6 +680,9 @@ var PLAN_FACE = '<span class="plan-face"><svg viewBox="0 0 1024 1024" width="36"
       '<nav class="tabs"><button type="button" id="tabA" class="' + (state.tab === "a" ? "on" : "") + '">档案</button>' +
       '<button type="button" id="tabB" class="' + (state.tab === "b" ? "on" : "") + '">化妆台</button></nav>' +
       (state.tab === "a" ? archive(sc) : vanity()) +
+      // Sheets at phone root so scrim covers the full viewport (not clipped by order/vanity blocks).
+      orderAddSheet() +
+      vanityAddSheet() +
       modePickSheet();
   }
 
@@ -764,7 +767,23 @@ var PLAN_FACE = '<span class="plan-face"><svg viewBox="0 0 1024 1024" width="36"
       '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>' +
       "</button></div>" +
       '<p class="fine">' + (orders.length ? orders.length + " 件，来自骆王宇橱窗。" : "只显示本人在骆王宇橱窗的订单。") + "</p>" +
-      orderHtml + orderAddSheet() + "</article>";
+      orderHtml + "</article>";
+  }
+
+  function vanityAddSheet() {
+    return '<div class="add-sheet" id="addSheet" hidden>' +
+      '<button type="button" class="sheet-scrim" id="addScrim" aria-label="关闭"></button>' +
+      '<form class="sheet" id="addForm" role="dialog" aria-modal="true" aria-labelledby="addTitle">' +
+      '<span class="sheet-grab" aria-hidden="true"></span>' +
+      '<div class="sheet-head"><h2 id="addTitle">添加手上已有的商品</h2><button type="button" class="sheet-x" id="addClose" aria-label="关闭"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button></div>' +
+      '<p class="sheet-sub">添加后，会判断它和你的护肤方案是否匹配。</p>' +
+      '<button type="button" class="add-shot" id="addCam">' +
+      '<span class="add-shot-empty"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.6" d="M8 7.2 9.2 5h5.6L16 7.2h3.2A1.6 1.6 0 0 1 20.8 8.8v8.4a1.6 1.6 0 0 1-1.6 1.6H4.8a1.6 1.6 0 0 1-1.6-1.6V8.8A1.6 1.6 0 0 1 4.8 7.2H8z"/><circle cx="12" cy="12.4" r="3.2" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><b>拍一下包装</b><span>拍完也可以再写名字</span></span>' +
+      '<img alt="" hidden><span class="add-shot-redo">重拍</span></button>' +
+      '<input type="file" id="addPhoto" accept="image/*" capture="environment" hidden>' +
+      '<p class="sheet-or">或者</p>' +
+      '<input id="addName" class="sheet-name" maxlength="40" autocomplete="off" enterkeyhint="done" placeholder="输入商品名，比如 理肤泉 B5 面霜" />' +
+      '<button type="submit" class="btn">添加</button></form></div>';
   }
 
   function vanity() {
@@ -780,20 +799,7 @@ var PLAN_FACE = '<span class="plan-face"><svg viewBox="0 0 1024 1024" width="36"
     var adder = '<button type="button" class="vanity-add" id="addOpen" aria-haspopup="dialog">' +
       '<span class="add-plus" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>' +
       '<span class="add-txt"><b>添加手上已有的商品</b></span>' +
-      "</button>" +
-      '<div class="add-sheet" id="addSheet" hidden>' +
-      '<button type="button" class="sheet-scrim" id="addScrim" aria-label="关闭"></button>' +
-      '<form class="sheet" id="addForm" role="dialog" aria-modal="true" aria-labelledby="addTitle">' +
-      '<span class="sheet-grab" aria-hidden="true"></span>' +
-      '<div class="sheet-head"><h2 id="addTitle">添加手上已有的商品</h2><button type="button" class="sheet-x" id="addClose" aria-label="关闭"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button></div>' +
-      '<p class="sheet-sub">添加后，会判断它和你的护肤方案是否匹配。</p>' +
-      '<button type="button" class="add-shot" id="addCam">' +
-      '<span class="add-shot-empty"><svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.6" d="M8 7.2 9.2 5h5.6L16 7.2h3.2A1.6 1.6 0 0 1 20.8 8.8v8.4a1.6 1.6 0 0 1-1.6 1.6H4.8a1.6 1.6 0 0 1-1.6-1.6V8.8A1.6 1.6 0 0 1 4.8 7.2H8z"/><circle cx="12" cy="12.4" r="3.2" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><b>拍一下包装</b><span>拍完也可以再写名字</span></span>' +
-      '<img alt="" hidden><span class="add-shot-redo">重拍</span></button>' +
-      '<input type="file" id="addPhoto" accept="image/*" capture="environment" hidden>' +
-      '<p class="sheet-or">或者</p>' +
-      '<input id="addName" class="sheet-name" maxlength="40" autocomplete="off" enterkeyhint="done" placeholder="输入商品名，比如 理肤泉 B5 面霜" />' +
-      '<button type="submit" class="btn">添加</button></form></div>';
+      "</button>";
     if (!orders.length) return overview + mine + adder;
     return overview +
       orders.map(function (o) {
@@ -1138,7 +1144,8 @@ var PLAN_FACE = '<span class="plan-face"><svg viewBox="0 0 1024 1024" width="36"
         clearSheetKb(orderForm);
         clearSheetHost(orderSheet);
       };
-      document.getElementById("orderAddOpen").onclick = openOrder;
+      var orderAddOpen = document.getElementById("orderAddOpen");
+      if (orderAddOpen) orderAddOpen.onclick = openOrder;
       document.getElementById("orderScrim").onclick = closeOrder;
       document.getElementById("orderClose").onclick = closeOrder;
       orderSheet.onkeydown = function (e) { if (e.key === "Escape") closeOrder(); };
@@ -1182,7 +1189,8 @@ var PLAN_FACE = '<span class="plan-face"><svg viewBox="0 0 1024 1024" width="36"
         clearSheetKb(addForm);
         clearSheetHost(sheet);
       };
-      document.getElementById("addOpen").onclick = openSheet;
+      var addOpen = document.getElementById("addOpen");
+      if (addOpen) addOpen.onclick = openSheet;
       document.getElementById("addScrim").onclick = closeSheet;
       document.getElementById("addClose").onclick = closeSheet;
       sheet.onkeydown = function (e) { if (e.key === "Escape") closeSheet(); };
