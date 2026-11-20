@@ -735,7 +735,7 @@ var PLAN_FACE = '<span class="plan-face"><svg viewBox="0 0 1024 1024" width="36"
     var planOpen = state.planOpen !== false;
     var foldChev = '<svg viewBox="0 0 12 12" width="12" height="12" aria-hidden="true"><path d="M3 4.5 6 8l3-3.5" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
     var skin = sc && state.saved
-      ? '<header class="skin-head"><p class="skin-kicker">肤质方案</p><div class="skin-title">' + PLAN_FACE + "<h2>" + esc(sc.name) + "</h2></div>" +
+      ? '<header class="skin-head"><div class="skin-title">' + PLAN_FACE + "<h2>" + esc(sc.name) + "</h2></div>" +
         '<p class="skin-state">' + esc(sc.state) + "</p></header>" +
         '<article class="skin-file' + (planOpen ? " open" : "") + '">' +
           '<div class="plan-fold-head">' +
@@ -747,7 +747,7 @@ var PLAN_FACE = '<span class="plan-face"><svg viewBox="0 0 1024 1024" width="36"
             skinBlock("am", "早间", sc.am) + skinBlock("pm", "晚间", sc.pm) +
           "</div>" +
         "</article>"
-      : '<header class="skin-head"><p class="skin-kicker">肤质方案</p><h2>尚未完成自测</h2></header>';
+      : '<header class="skin-head"><h2>尚未完成自测</h2></header>';
     var pointsBal = 2860;
     var points = '<article class="points-card">' +
       '<img class="points-crown" src="assets/points-crown.png" alt="" aria-hidden="true" />' +
