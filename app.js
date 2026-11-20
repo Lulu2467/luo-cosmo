@@ -1136,6 +1136,7 @@ var PLAN_FACE = '<span class="plan-face"><svg viewBox="0 0 1024 1024" width="36"
       var closeOrder = function () {
         orderSheet.hidden = true;
         clearSheetKb(orderForm);
+        clearSheetHost(orderSheet);
       };
       document.getElementById("orderAddOpen").onclick = openOrder;
       document.getElementById("orderScrim").onclick = closeOrder;
@@ -1179,6 +1180,7 @@ var PLAN_FACE = '<span class="plan-face"><svg viewBox="0 0 1024 1024" width="36"
       var closeSheet = function () {
         sheet.hidden = true;
         clearSheetKb(addForm);
+        clearSheetHost(sheet);
       };
       document.getElementById("addOpen").onclick = openSheet;
       document.getElementById("addScrim").onclick = closeSheet;
@@ -1430,26 +1432,49 @@ var PLAN_FACE = '<span class="plan-face"><svg viewBox="0 0 1024 1024" width="36"
     form.style.removeProperty("--sheet-max");
   }
 
+  function clearSheetHost(host) {
+    if (!host) return;
+    host.style.top = "";
+    host.style.height = "";
+    host.style.left = "";
+    host.style.right = "";
+    host.style.bottom = "";
+  }
+
+  function syncSheetHost(host, vv) {
+    if (!host || host.hidden || !vv) {
+      clearSheetHost(host);
+      return;
+    }
+    // Keep fixed sheet inside the visible viewport (iOS Safari chrome / keyboard).
+    host.style.top = Math.round(vv.offsetTop) + "px";
+    host.style.height = Math.round(vv.height) + "px";
+    host.style.left = "0";
+    host.style.right = "0";
+    host.style.bottom = "auto";
+  }
+
   function fitSheetForm(form, covered, vv) {
     if (!form) return;
     var host = form.closest(".add-sheet");
     if (!host || host.hidden) {
       clearSheetKb(form);
+      clearSheetHost(host);
       return;
     }
-    if (covered > 48) {
-      var maxH = Math.max(220, Math.round(vv.height - 10));
+    syncSheetHost(host, vv);
+    var focus = document.activeElement;
+    var typing = focus && form.contains(focus) && (focus.tagName === "INPUT" || focus.tagName === "TEXTAREA");
+    // Only treat as keyboard when an input is focused and a large chunk is covered.
+    if (typing && covered > 120) {
+      var maxH = Math.max(240, Math.round(vv.height - 8));
       form.classList.add("sheet-kb");
       form.style.minHeight = "0px";
       form.style.maxHeight = maxH + "px";
       form.style.setProperty("--sheet-max", maxH + "px");
-      form.style.transform = "translateY(-" + covered + "px)";
-      var focus = document.activeElement;
-      if (focus && form.contains(focus) && (focus.tagName === "INPUT" || focus.tagName === "TEXTAREA")) {
-        requestAnimationFrame(function () {
-          try { focus.scrollIntoView({ block: "center", inline: "nearest" }); } catch (e) {}
-        });
-      }
+      requestAnimationFrame(function () {
+        try { focus.scrollIntoView({ block: "center", inline: "nearest" }); } catch (e) {}
+      });
     } else {
       clearSheetKb(form);
     }
@@ -1470,6 +1495,9 @@ var PLAN_FACE = '<span class="plan-face"><svg viewBox="0 0 1024 1024" width="36"
     }
     fitSheetForm(document.getElementById("addForm"), covered, vv);
     fitSheetForm(document.getElementById("orderForm"), covered, vv);
+    var modeSheet = document.getElementById("modeSheet");
+    if (modeSheet && !modeSheet.hidden) syncSheetHost(modeSheet, vv);
+    else clearSheetHost(modeSheet);
   }
   if (window.visualViewport) {
     visualViewport.addEventListener("resize", fitKeyboard);
@@ -1477,7 +1505,7 @@ var PLAN_FACE = '<span class="plan-face"><svg viewBox="0 0 1024 1024" width="36"
   }
   document.addEventListener("focusin", function (e) {
     if (!e.target || !e.target.closest) return;
-    if (e.target.closest("#addForm, #orderForm")) fitKeyboard();
+    if (e.target.closest("#addForm, #orderForm, #modeSheet")) fitKeyboard();
   });
   document.addEventListener("focusout", function () {
     setTimeout(fitKeyboard, 80);
