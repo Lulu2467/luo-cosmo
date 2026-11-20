@@ -1165,15 +1165,17 @@ article > .btn.sm { margin-top: 12px; }
   font-size: 13px;
   line-height: 20px;
 }
-.mode-card-meta {
-  display: inline-flex;
-  align-self: flex-start;
-  margin-top: 8px;
-  padding: 4px 10px;
-  border-radius: 999px;
-  font-size: 12px;
-  line-height: 18px;
-  font-weight: 500;
+.mode-card-ico-face {
+  padding: 0;
+  overflow: hidden;
+  background: #dfe8f2;
+}
+.mode-card-face {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 22%;
 }
 .mode-card-coach {
   background: var(--ink);
@@ -1184,16 +1186,15 @@ article > .btn.sm { margin-top: 12px; }
   background: rgba(255, 255, 255, 0.12);
   color: #fff;
 }
+.mode-card-coach .mode-card-ico-face {
+  box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.28);
+}
 .mode-card-coach .mode-card-row b { color: #fff; }
 .mode-card-coach .mode-card-row i {
   background: #24508a;
   color: #fff;
 }
 .mode-card-coach .mode-card-desc { color: rgba(255, 255, 255, 0.72); }
-.mode-card-coach .mode-card-meta {
-  background: rgba(255, 255, 255, 0.12);
-  color: rgba(255, 255, 255, 0.88);
-}
 .mode-card-qa {
   background: #fff;
   color: var(--ink);
