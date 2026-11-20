@@ -183,6 +183,7 @@
       saved: false,
       chat: [],
       chatMode: "qa",
+      rememberMode: false,
       agreed: true
     };
   }
@@ -197,6 +198,7 @@
       data.tab = "a";
       data.chat = [];
       if (data.chatMode !== "coach") data.chatMode = "qa";
+      data.rememberMode = !!data.rememberMode;
       return data;
     } catch (e) {
       return null;
@@ -632,6 +634,38 @@ var PLAN_FACE = '<span class="plan-face"><svg viewBox="0 0 1024 1024" width="36"
         "</section>";
   }
 
+  function modePickSheet() {
+    var rem = !!state.rememberMode;
+    var drop = '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" d="M12 3.8c-2.6 3.1-4.8 5.9-4.8 8.4a4.8 4.8 0 1 0 9.6 0c0-2.5-2.2-5.3-4.8-8.4z"/><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M12 13.2v3M10.5 14.7h3"/></svg>';
+    var bubble = '<svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" d="M6 17.4 4.6 20.2l3.4-1A7.8 7.8 0 1 0 6 17.4z"/><circle cx="12" cy="9.2" r="1" fill="currentColor"/><path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" d="M12 11.4v3.2"/></svg>';
+    return '<div class="add-sheet" id="modeSheet" hidden>' +
+      '<button type="button" class="sheet-scrim" id="modeScrim" aria-label="关闭"></button>' +
+      '<div class="sheet mode-sheet" role="dialog" aria-modal="true" aria-labelledby="modeTitle">' +
+      '<span class="sheet-grab" aria-hidden="true"></span>' +
+      '<h2 class="mode-sheet-title" id="modeTitle">今天想和小骆怎么聊？</h2>' +
+      '<p class="mode-sheet-sub">选一种方式开始</p>' +
+      '<button type="button" class="mode-card mode-card-coach" data-pick-mode="coach">' +
+        '<span class="mode-card-ico" aria-hidden="true">' + drop + "</span>" +
+        '<span class="mode-card-body">' +
+          '<span class="mode-card-row"><b>护肤陪练</b><i>专属定制</i></span>' +
+          '<span class="mode-card-desc">懂你的肤质，长期陪你调方案</span>' +
+          '<span class="mode-card-meta">约 1 分钟建档</span>' +
+        "</span>" +
+      "</button>" +
+      '<button type="button" class="mode-card mode-card-qa" data-pick-mode="qa">' +
+        '<span class="mode-card-ico" aria-hidden="true">' + bubble + "</span>" +
+        '<span class="mode-card-body">' +
+          '<span class="mode-card-row"><b>护肤问答</b><i>快速解答</i></span>' +
+          '<span class="mode-card-desc">一个问题，马上说清</span>' +
+        "</span>" +
+      "</button>" +
+      '<div class="mode-sheet-foot">' +
+        '<span>下次直接进入上次的模式</span>' +
+        '<button type="button" class="mode-switch' + (rem ? " on" : "") + '" id="modeRemember" role="switch" aria-checked="' + rem + '" aria-label="下次直接进入上次的模式"></button>' +
+      "</div>" +
+      "</div></div>";
+  }
+
   function home() {
     var sc = scheme();
     var meta = sc && state.saved
@@ -643,7 +677,8 @@ var PLAN_FACE = '<span class="plan-face"><svg viewBox="0 0 1024 1024" width="36"
       '<button type="button" class="btn sm" id="ask">' + ASK_ICON + '问小骆</button></div>' +
       '<nav class="tabs"><button type="button" id="tabA" class="' + (state.tab === "a" ? "on" : "") + '">档案</button>' +
       '<button type="button" id="tabB" class="' + (state.tab === "b" ? "on" : "") + '">化妆台</button></nav>' +
-      (state.tab === "a" ? archive(sc) : vanity());
+      (state.tab === "a" ? archive(sc) : vanity()) +
+      modePickSheet();
   }
 
   function demoOrders() {
@@ -1031,7 +1066,43 @@ var PLAN_FACE = '<span class="plan-face"><svg viewBox="0 0 1024 1024" width="36"
     if (tabA) tabA.onclick = function () { state.tab = "a"; render(); };
     if (tabB) tabB.onclick = function () { state.tab = "b"; render(); };
     var ask = document.getElementById("ask");
-    if (ask) ask.onclick = function () { go("chat"); };
+    var modeSheet = document.getElementById("modeSheet");
+    var openModeSheet = function () {
+      if (!modeSheet) return;
+      modeSheet.hidden = false;
+    };
+    var closeModeSheet = function () {
+      if (!modeSheet) return;
+      modeSheet.hidden = true;
+    };
+    var enterChatMode = function (mode) {
+      state.chatMode = mode === "coach" ? "coach" : "qa";
+      if (state.rememberMode) save();
+      closeModeSheet();
+      go("chat");
+    };
+    if (ask) ask.onclick = function () {
+      if (state.rememberMode) {
+        go("chat");
+        return;
+      }
+      openModeSheet();
+    };
+    if (modeSheet) {
+      var modeScrim = document.getElementById("modeScrim");
+      if (modeScrim) modeScrim.onclick = closeModeSheet;
+      modeSheet.onkeydown = function (e) { if (e.key === "Escape") closeModeSheet(); };
+      document.querySelectorAll("[data-pick-mode]").forEach(function (b) {
+        b.onclick = function () { enterChatMode(b.getAttribute("data-pick-mode")); };
+      });
+      var modeRemember = document.getElementById("modeRemember");
+      if (modeRemember) modeRemember.onclick = function () {
+        state.rememberMode = !state.rememberMode;
+        modeRemember.classList.toggle("on", state.rememberMode);
+        modeRemember.setAttribute("aria-checked", state.rememberMode ? "true" : "false");
+        if (state.saved) save();
+      };
+    }
     document.querySelectorAll("[data-show]").forEach(function (b) {
       b.onclick = function () {
         state.tab = "b";
