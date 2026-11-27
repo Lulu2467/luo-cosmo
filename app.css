@@ -167,6 +167,38 @@ html:has(.splash-on) { background: #2a3340; }
   pointer-events: none;
   user-select: none;
 }
+.splash-sign {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  top: 49%;
+  width: min(78vw, 320px);
+  height: auto;
+  transform: translate(-50%, -50%);
+  overflow: visible;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.28));
+}
+.splash-sign-path {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 5.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0.96;
+}
+.splash-sign-path.write {
+  animation: luo-write 1.7s cubic-bezier(0.4, 0.05, 0.2, 1) 0.2s forwards;
+}
+@keyframes luo-write {
+  to { stroke-dashoffset: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .splash-sign-path {
+    stroke-dashoffset: 0 !important;
+    animation: none !important;
+  }
+}
 .splash-bar {
   position: absolute;
   z-index: 3;

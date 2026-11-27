@@ -381,11 +381,22 @@ function mark() {
     clearSplashTimer();
     app.innerHTML =
       '<section class="splash" aria-label="开屏">' +
-        '<img class="splash-photo" src="assets/luo-splash.jpg?v=2" alt="骆王宇" />' +
+        '<img class="splash-photo" src="assets/luo-splash.jpg?v=3" alt="骆王宇" />' +
+        '<svg class="splash-sign" viewBox="0 0 360 200" aria-hidden="true">' +
+          '<path id="luoPath" class="splash-sign-path" fill="none" stroke="#fff" stroke-width="5.4" stroke-linecap="round" stroke-linejoin="round" d="M34 122 C38 38 128 14 158 66 C172 94 148 128 108 120 C152 130 198 82 224 96 C242 108 238 140 208 134 C252 116 296 66 332 86 C358 100 354 140 314 138 C344 150 372 122 364 88" />' +
+        "</svg>" +
         '<header class="splash-bar">' + backBtn("toSymbion") + "</header>" +
         '<button type="button" class="splash-go" id="enter" aria-label="进入私屿"></button>' +
       "</section>";
-    splashTimer = setTimeout(leaveSplash, 2400);
+    requestAnimationFrame(function () {
+      var path = document.getElementById("luoPath");
+      if (!path || !path.getTotalLength) return;
+      var len = Math.ceil(path.getTotalLength()) + 1;
+      path.style.strokeDasharray = String(len);
+      path.style.strokeDashoffset = String(len);
+      path.classList.add("write");
+    });
+    splashTimer = setTimeout(leaveSplash, 3200);
   }
 
   function loginMarkup(live) {
