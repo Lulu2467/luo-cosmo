@@ -321,7 +321,7 @@ function mark() {
 
   function render() {
     var theme = document.querySelector('meta[name="theme-color"]');
-    if (theme) theme.setAttribute("content", state.screen === "symbion" ? "#fafafa" : "#e5eef5");
+    if (theme) theme.setAttribute("content", state.screen === "symbion" ? "#fafafa" : "#fbfaf7");
     app.classList.toggle("dy-on", state.screen === "douyin");
     app.classList.toggle("chat-on", state.screen === "chat");
     purgeSheets();
