@@ -163,7 +163,20 @@
   var state = load() || blank();
   var smsLeft = 0;
   var smsTimer = null;
+  var splashTimer = null;
   var qToken = 0;
+
+  function clearSplashTimer() {
+    if (splashTimer) {
+      clearTimeout(splashTimer);
+      splashTimer = null;
+    }
+  }
+
+  function leaveSplash() {
+    clearSplashTimer();
+    go(state.saved ? "home" : "login");
+  }
 
   function blank() {
     return {
@@ -365,12 +378,14 @@ function mark() {
   }
 
   function splash() {
+    clearSplashTimer();
     app.innerHTML =
       '<section class="splash" aria-label="开屏">' +
         '<img class="splash-photo" src="assets/luo-splash.jpg?v=2" alt="骆王宇" />' +
         '<header class="splash-bar">' + backBtn("toSymbion") + "</header>" +
         '<button type="button" class="splash-go" id="enter" aria-label="进入私屿"></button>' +
       "</section>";
+    splashTimer = setTimeout(leaveSplash, 2400);
   }
 
   function loginMarkup(live) {
@@ -885,6 +900,7 @@ var PLAN_FACE = '<span class="plan-face"><svg viewBox="0 0 1024 1024" width="36"
   }
 
   function go(screen) {
+    if (screen !== "splash") clearSplashTimer();
     state.screen = screen;
     render();
   }
@@ -927,11 +943,14 @@ var PLAN_FACE = '<span class="plan-face"><svg viewBox="0 0 1024 1024" width="36"
 
   function bind() {
     var enter = document.getElementById("enter");
-    if (enter) enter.onclick = function () { go(state.saved ? "home" : "login"); };
+    if (enter) enter.onclick = leaveSplash;
     var openLuo = document.getElementById("openLuo");
     if (openLuo) openLuo.onclick = function () { go("splash"); };
     var toSymbion = document.getElementById("toSymbion");
-    if (toSymbion) toSymbion.onclick = function () { go("symbion"); };
+    if (toSymbion) toSymbion.onclick = function () {
+      clearSplashTimer();
+      go("symbion");
+    };
     var openRoland = document.getElementById("openRoland");
     if (openRoland) openRoland.onclick = function () { toast("Roland 的 Cosmo 还没接入这个原型"); };
     var backSplash = document.getElementById("backSplash");
