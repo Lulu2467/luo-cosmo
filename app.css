@@ -5,6 +5,13 @@
   font-style: normal;
   font-display: swap;
 }
+@font-face {
+  font-family: "Dawning of a New Day";
+  src: url("assets/dawning-of-a-new-day.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
 
 :root {
   --ink: #1c2433;
@@ -167,36 +174,36 @@ html:has(.splash-on) { background: #2a3340; }
   pointer-events: none;
   user-select: none;
 }
-.splash-sign {
+.splash-luo {
   position: absolute;
   z-index: 2;
-  left: 50%;
-  top: 49%;
-  width: min(78vw, 320px);
-  height: auto;
+  left: calc(50% + 0.5px);
+  top: calc(50% + 6.5px);
   transform: translate(-50%, -50%);
-  overflow: visible;
+  width: 162px;
+  height: 155px;
+  margin: 0;
+  padding: 0;
+  font-family: "Dawning of a New Day", cursive;
+  font-style: normal;
+  font-weight: 400;
+  font-size: 96px;
+  line-height: 155px;
+  text-align: center;
+  color: #fff;
   pointer-events: none;
+  user-select: none;
   filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.28));
-}
-.splash-sign-path {
-  fill: none;
-  stroke: #fff;
-  stroke-width: 5.2;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  opacity: 0.96;
-}
-.splash-sign-path.write {
-  animation: luo-write 1.7s cubic-bezier(0.4, 0.05, 0.2, 1) 0.2s forwards;
+  clip-path: inset(0 100% 0 0);
+  animation: luo-write 1.7s cubic-bezier(0.45, 0.05, 0.2, 1) 0.2s forwards;
 }
 @keyframes luo-write {
-  to { stroke-dashoffset: 0; }
+  to { clip-path: inset(0 0% 0 0); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .splash-sign-path {
-    stroke-dashoffset: 0 !important;
-    animation: none !important;
+  .splash-luo {
+    clip-path: none;
+    animation: none;
   }
 }
 .splash-bar {
