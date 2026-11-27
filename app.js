@@ -367,7 +367,7 @@ function mark() {
   function splash() {
     app.innerHTML =
       '<section class="splash" aria-label="开屏">' +
-        '<img class="splash-photo" src="assets/luo-splash.jpg" alt="骆王宇" />' +
+        '<img class="splash-photo" src="assets/luo-splash.jpg?v=2" alt="骆王宇" />' +
         '<header class="splash-bar">' + backBtn("toSymbion") + "</header>" +
         '<button type="button" class="splash-go" id="enter" aria-label="进入私屿"></button>' +
       "</section>";
