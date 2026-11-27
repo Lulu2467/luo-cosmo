@@ -27,7 +27,6 @@ html {
   background: var(--page);
   min-height: 100%;
 }
-html:has(.hero) { background: var(--page); }
 body {
   font: 14px/21px -apple-system, BlinkMacSystemFont, "PingFang SC", "Noto Sans SC", sans-serif;
   color: var(--muted);
@@ -142,60 +141,66 @@ h2 { font-size: 16px; font-weight: 600; line-height: 22px; margin: 0 0 8px; }
 .sub { margin: 0 0 16px; font-size: 13px; line-height: 24px; letter-spacing: 0.5px; color: var(--muted); }
 .fine { margin: 8px 0 12px; font-size: 13px; line-height: 24px; letter-spacing: 0.5px; color: var(--dim); }
 p { margin: 0 0 8px; }
-.hero { display: flex; flex-direction: column; align-items: flex-start; text-align: left; }
-.hero .kicker { position: relative; margin: 0 0 6px; font-size: 12px; line-height: 20px; letter-spacing: 0.16em; color: var(--muted); }
-.hero h1 {
-  position: relative;
-  margin: 0 0 16px;
-  font-size: 46px;
-  line-height: 56px;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  color: var(--ink);
-}
 .phone > .btn { margin-top: auto; }
-.portrait-frame { margin: 0 0 16px; }
-.hero .portrait-frame {
-  position: absolute;
-  top: calc(-8px - 6dvh);
-  right: -16px;
-  bottom: -8px;
-  left: -16px;
-  margin: 0;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
+.phone.splash-on {
+  padding: 0;
+  background: #2a3340;
+}
+html:has(.splash-on) { background: #2a3340; }
+.splash {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
   overflow: hidden;
+  background: #2a3340;
+}
+.splash-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 18%;
+  display: block;
   pointer-events: none;
-  background: radial-gradient(ellipse 62% 40% at 56% 40%, color-mix(in srgb, var(--mist) 70%, transparent), color-mix(in srgb, var(--glow) 28%, transparent) 42%, transparent 72%);
-  -webkit-mask-image: linear-gradient(180deg, #000 58%, rgba(0, 0, 0, 0.6) 70%, transparent 88%);
-  mask-image: linear-gradient(180deg, #000 58%, rgba(0, 0, 0, 0.6) 70%, transparent 88%);
+  user-select: none;
 }
-.hero .portrait {
-  width: auto;
-  max-width: none;
-  height: 108%;
-  transform: translateX(2%);
+.splash-bar {
+  position: absolute;
+  z-index: 3;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  height: 46px;
+  margin: 0;
+  padding: calc(12px + env(safe-area-inset-top, 0px)) 16px 0;
+  pointer-events: none;
+}
+.splash-bar .back {
+  pointer-events: auto;
+  filter: drop-shadow(0 1px 2px rgba(255, 255, 255, 0.35));
+}
+.splash-go {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
   background: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
-.hero .hero-tags { display: flex; gap: 0; align-items: center; margin: 0; font-size: 14px; letter-spacing: 0.18em; color: var(--muted); }
-.hero .hero-tags span { padding: 0 14px; }
-.hero .hero-tags span:first-child { padding-left: 0; }
-.hero .hero-tags span + span { border-left: 1px solid rgba(26, 39, 68, 0.22); }
-.phone:has(.hero) > .btn { box-shadow: 0 10px 24px rgba(26, 39, 68, 0.16); }
-.phone > .hero { position: relative; flex: 1; justify-content: flex-end; min-height: 0; }
-.hero .kicker,
-.hero h1,
-.hero .hero-tags { position: relative; z-index: 1; }
-.phone > .hero ~ .btn { margin-top: 24px; }
-html:has(.hero) { background: var(--page); }
-.phone:has(.hero) {
-  background:
-    linear-gradient(158deg, color-mix(in srgb, var(--mist) 70%, transparent) 8%, transparent 48%) left top / 100% 275px no-repeat,
-    linear-gradient(338deg, color-mix(in srgb, var(--glow) 35%, transparent) 8%, transparent 48%) right bottom / 100% 275px no-repeat,
-    var(--page);
+.splash-go:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.7);
+  outline-offset: -10px;
 }
-.phone:has(.hero) > .bar { gap: 8px; }
 
 html:has(.sym-head) { background: #fbfbfb; }
 .phone:has(.sym-head) { background: #fbfbfb; }
@@ -253,10 +258,6 @@ html:has(.sym-head) { background: #fbfbfb; }
 .cosmo-kind { font-size: 12px; line-height: 16px; font-weight: 600; letter-spacing: 0.04em; color: #3c7a94; }
 .cosmo-name { margin-top: 2px; overflow: hidden; font-size: 18px; line-height: 24px; font-weight: 600; white-space: nowrap; text-overflow: ellipsis; }
 .cosmo-desc { margin-top: 2px; overflow: hidden; font-size: 13px; line-height: 18px; color: #6b6b70; white-space: nowrap; text-overflow: ellipsis; }
-.phone > .hero { align-items: center; text-align: center; }
-.phone > .hero h1 { margin: 0 0 9px; font-size: 36px; line-height: 56px; }
-.phone > .hero .hero-tags { justify-content: center; }
-.phone > .hero ~ .btn { align-self: center; width: 251px; max-width: 100%; margin-top: 19px; font-weight: 700; }
 .portrait {
   width: 100%;
   height: auto;

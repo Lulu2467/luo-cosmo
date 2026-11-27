@@ -324,6 +324,8 @@ function mark() {
     if (theme) theme.setAttribute("content", state.screen === "symbion" ? "#fafafa" : "#fbfaf7");
     app.classList.toggle("dy-on", state.screen === "douyin");
     app.classList.toggle("chat-on", state.screen === "chat");
+    app.classList.toggle("splash-on", state.screen === "splash");
+    if (theme && state.screen === "splash") theme.setAttribute("content", "#2a3340");
     purgeSheets();
     var s = state.screen;
     if (s === "symbion") symbion();
@@ -364,13 +366,11 @@ function mark() {
 
   function splash() {
     app.innerHTML =
-      '<header class="bar">' + backBtn("toSymbion") + mark() + "</header>" +
-      '<div class="hero">' +
-        '<figure class="portrait-frame"><img class="portrait" src="assets/luo-hero.png" alt="骆王宇"></figure>' +
-        '<p class="kicker">Symbion · 私屿</p><h1>骆王宇</h1>' +
-        '<p class="sub hero-tags"><span>科学</span><span>极简</span><span>高效</span></p>' +
-      "</div>" +
-      '<button type="button" class="btn" id="enter">进入</button>';
+      '<section class="splash" aria-label="开屏">' +
+        '<img class="splash-photo" src="assets/luo-splash.jpg" alt="骆王宇" />' +
+        '<header class="splash-bar">' + backBtn("toSymbion") + "</header>" +
+        '<button type="button" class="splash-go" id="enter" aria-label="进入私屿"></button>' +
+      "</section>";
   }
 
   function loginMarkup(live) {
